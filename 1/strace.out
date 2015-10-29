@@ -1,0 +1,111 @@
+2139  execve("./a.out", ["./a.out"], [/* 32 vars */]) = 0
+2139  brk(0)                            = 0x10bc000
+2139  access("/etc/ld.so.nohwcap", F_OK) = -1 ENOENT (No such file or directory)
+2139  mmap(NULL, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x7f6392420000
+2139  access("/etc/ld.so.preload", R_OK) = -1 ENOENT (No such file or directory)
+2139  open("/etc/ld.so.cache", O_RDONLY|O_CLOEXEC) = 3
+2139  fstat(3, {st_mode=S_IFREG|0644, st_size=41539, ...}) = 0
+2139  mmap(NULL, 41539, PROT_READ, MAP_PRIVATE, 3, 0) = 0x7f6392415000
+2139  close(3)                          = 0
+2139  access("/etc/ld.so.nohwcap", F_OK) = -1 ENOENT (No such file or directory)
+2139  open("/lib/x86_64-linux-gnu/libc.so.6", O_RDONLY|O_CLOEXEC) = 3
+2139  read(3, "\177ELF\2\1\1\0\0\0\0\0\0\0\0\0\3\0>\0\1\0\0\0\320\37\2\0\0\0\0\0"..., 832) = 832
+2139  fstat(3, {st_mode=S_IFREG|0755, st_size=1840928, ...}) = 0
+2139  mmap(NULL, 3949248, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_DENYWRITE, 3, 0) = 0x7f6391e3b000
+2139  mprotect(0x7f6391ff6000, 2093056, PROT_NONE) = 0
+2139  mmap(0x7f63921f5000, 24576, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x1ba000) = 0x7f63921f5000
+2139  mmap(0x7f63921fb000, 17088, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_ANONYMOUS, -1, 0) = 0x7f63921fb000
+2139  close(3)                          = 0
+2139  mmap(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x7f6392414000
+2139  mmap(NULL, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x7f6392412000
+2139  arch_prctl(ARCH_SET_FS, 0x7f6392412740) = 0
+2139  mprotect(0x7f63921f5000, 16384, PROT_READ) = 0
+2139  mprotect(0x7f6392422000, 4096, PROT_READ) = 0
+2139  munmap(0x7f6392415000, 41539)     = 0
+2139  fstat(1, {st_mode=S_IFCHR|0620, st_rdev=makedev(136, 0), ...}) = 0
+2139  mmap(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x7f639241f000
+2139  fstat(0, {st_mode=S_IFCHR|0620, st_rdev=makedev(136, 0), ...}) = 0
+2139  mmap(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x7f639241e000
+2139  write(1, "Hello world, this is Linux!>", 28) = 28
+2139  read(0, "date\n", 1024)           = 5
+2139  clone(child_stack=0, flags=CLONE_CHILD_CLEARTID|CLONE_CHILD_SETTID|SIGCHLD, child_tidptr=0x7f6392412a10) = 2140
+2139  wait4(-1,  <unfinished ...>
+2140  execve("/usr/local/sbin/date", ["date"], [/* 32 vars */]) = -1 ENOENT (No such file or directory)
+2140  execve("/usr/local/bin/date", ["date"], [/* 32 vars */]) = -1 ENOENT (No such file or directory)
+2140  execve("/usr/sbin/date", ["date"], [/* 32 vars */]) = -1 ENOENT (No such file or directory)
+2140  execve("/usr/bin/date", ["date"], [/* 32 vars */]) = -1 ENOENT (No such file or directory)
+2140  execve("/sbin/date", ["date"], [/* 32 vars */]) = -1 ENOENT (No such file or directory)
+2140  execve("/bin/date", ["date"], [/* 32 vars */]) = 0
+2140  brk(0)                            = 0xe38000
+2140  access("/etc/ld.so.nohwcap", F_OK) = -1 ENOENT (No such file or directory)
+2140  mmap(NULL, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x7f75a5603000
+2140  access("/etc/ld.so.preload", R_OK) = -1 ENOENT (No such file or directory)
+2140  open("/etc/ld.so.cache", O_RDONLY|O_CLOEXEC) = 3
+2140  fstat(3, {st_mode=S_IFREG|0644, st_size=41539, ...}) = 0
+2140  mmap(NULL, 41539, PROT_READ, MAP_PRIVATE, 3, 0) = 0x7f75a55f8000
+2140  close(3)                          = 0
+2140  access("/etc/ld.so.nohwcap", F_OK) = -1 ENOENT (No such file or directory)
+2140  open("/lib/x86_64-linux-gnu/libc.so.6", O_RDONLY|O_CLOEXEC) = 3
+2140  read(3, "\177ELF\2\1\1\0\0\0\0\0\0\0\0\0\3\0>\0\1\0\0\0\320\37\2\0\0\0\0\0"..., 832) = 832
+2140  fstat(3, {st_mode=S_IFREG|0755, st_size=1840928, ...}) = 0
+2140  mmap(NULL, 3949248, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_DENYWRITE, 3, 0) = 0x7f75a501e000
+2140  mprotect(0x7f75a51d9000, 2093056, PROT_NONE) = 0
+2140  mmap(0x7f75a53d8000, 24576, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x1ba000) = 0x7f75a53d8000
+2140  mmap(0x7f75a53de000, 17088, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_ANONYMOUS, -1, 0) = 0x7f75a53de000
+2140  close(3)                          = 0
+2140  mmap(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x7f75a55f7000
+2140  mmap(NULL, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x7f75a55f5000
+2140  arch_prctl(ARCH_SET_FS, 0x7f75a55f5740) = 0
+2140  mprotect(0x7f75a53d8000, 16384, PROT_READ) = 0
+2140  mprotect(0x60d000, 4096, PROT_READ) = 0
+2140  mprotect(0x7f75a5605000, 4096, PROT_READ) = 0
+2140  munmap(0x7f75a55f8000, 41539)     = 0
+2140  brk(0)                            = 0xe38000
+2140  brk(0xe59000)                     = 0xe59000
+2140  open("/usr/lib/locale/locale-archive", O_RDONLY|O_CLOEXEC) = 3
+2140  fstat(3, {st_mode=S_IFREG|0644, st_size=2919792, ...}) = 0
+2140  mmap(NULL, 2919792, PROT_READ, MAP_PRIVATE, 3, 0) = 0x7f75a4d55000
+2140  close(3)                          = 0
+2140  open("/usr/share/locale/locale.alias", O_RDONLY|O_CLOEXEC) = 3
+2140  fstat(3, {st_mode=S_IFREG|0644, st_size=2570, ...}) = 0
+2140  mmap(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x7f75a5602000
+2140  read(3, "# Locale name alias data base.\n#"..., 4096) = 2570
+2140  read(3, "", 4096)                 = 0
+2140  close(3)                          = 0
+2140  munmap(0x7f75a5602000, 4096)      = 0
+2140  open("/usr/lib/locale/zh_CN.UTF-8/LC_CTYPE", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+2140  open("/usr/lib/locale/zh_CN.utf8/LC_CTYPE", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+2140  open("/usr/lib/locale/zh_CN/LC_CTYPE", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+2140  open("/usr/lib/locale/zh.UTF-8/LC_CTYPE", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+2140  open("/usr/lib/locale/zh.utf8/LC_CTYPE", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+2140  open("/usr/lib/locale/zh/LC_CTYPE", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+2140  open("/usr/share/locale-langpack/zh_CN.UTF-8/LC_CTYPE", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+2140  open("/usr/share/locale-langpack/zh_CN.utf8/LC_CTYPE", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+2140  open("/usr/share/locale-langpack/zh_CN/LC_CTYPE", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+2140  open("/usr/share/locale-langpack/zh.UTF-8/LC_CTYPE", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+2140  open("/usr/share/locale-langpack/zh.utf8/LC_CTYPE", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+2140  open("/usr/share/locale-langpack/zh/LC_CTYPE", O_RDONLY|O_CLOEXEC) = -1 ENOENT (No such file or directory)
+2140  open("/etc/localtime", O_RDONLY|O_CLOEXEC) = 3
+2140  fstat(3, {st_mode=S_IFREG|0644, st_size=388, ...}) = 0
+2140  fstat(3, {st_mode=S_IFREG|0644, st_size=388, ...}) = 0
+2140  mmap(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x7f75a5602000
+2140  read(3, "TZif2\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\2\0\0\0\2\0\0\0\0"..., 4096) = 388
+2140  lseek(3, -240, SEEK_CUR)          = 148
+2140  read(3, "TZif2\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\3\0\0\0\3\0\0\0\0"..., 4096) = 240
+2140  close(3)                          = 0
+2140  munmap(0x7f75a5602000, 4096)      = 0
+2140  fstat(1, {st_mode=S_IFCHR|0620, st_rdev=makedev(136, 0), ...}) = 0
+2140  mmap(NULL, 4096, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x7f75a5602000
+2140  write(1, "Thu Oct 29 14:38:42 CST 2015\n", 29) = 29
+2140  close(1)                          = 0
+2140  munmap(0x7f75a5602000, 4096)      = 0
+2140  close(2)                          = 0
+2140  exit_group(0)                     = ?
+2140  +++ exited with 0 +++
+2139  <... wait4 resumed> [{WIFEXITED(s) && WEXITSTATUS(s) == 0}], 0, NULL) = 2140
+2139  --- SIGCHLD {si_signo=SIGCHLD, si_code=CLD_EXITED, si_pid=2140, si_status=0, si_utime=0, si_stime=0} ---
+2139  write(1, "child process return 0 \n", 24) = 24
+2139  write(1, ">", 1)                  = 1
+2139  read(0, 0x7f639241e000, 1024)     = ? ERESTARTSYS (To be restarted if SA_RESTART is set)
+2139  --- SIGINT {si_signo=SIGINT, si_code=SI_KERNEL} ---
+2139  +++ killed by SIGINT +++
