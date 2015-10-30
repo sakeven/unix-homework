@@ -1,4 +1,4 @@
-#                      CFS Scheduler
+# CFS Scheduler
 
 ## 1.  概览
 
@@ -7,11 +7,11 @@ CFS 意为 “完全公平调度器”，是一种新的“桌面”进程调度
 
 80% 的 CFS 设计可以被总结为一句话：CFS 从根本上模仿一种在真实硬件上的“理想的精确的多任务 CPU ”。
 
-“理想多任务 CPU ”是一种拥有 100% 物理能力的（不存在的 :-) ）的 CPU，在它上面运行的每个任务都有着精确相同的速度，并且是并行的。
+“理想多任务 CPU ”是一种拥有 100% 物理能力的（不存在的 :-) ）的 CPU ，在它上面运行的每个任务都有着精确相同的速度，并且是并行的。
 例如：如果这个 CPU 上运行着 2 个任务，那么每个任务都使用 50% 的物理能力等...确实并行地运行。
 
 在真实的硬件上，我们仅仅只能一次运行一个任务，所以我们需要介绍下“虚拟运行时”的概念。
-在上述的理想多任务CPU上，一个任务的虚拟运行时说明了该任务的下一个时间片将要开始执行的时间。
+在上述的理想多任务 CPU 上，一个任务的虚拟运行时说明了该任务的下一个时间片将要开始执行的时间。
 在实践中，一个任务的虚拟运行时等于它的真实运行时均分到所有的正在运行的任务。
 
 ## 2. 少数实现细节 
@@ -28,38 +28,20 @@ CFS 总是试着在可运行任务间分割 CPU 时间，使之尽可能接近�
 
 ## 3. 红黑树 
 
-CFS's design is quite radical: it does not use the old data structures for the
-runqueues, but it uses a time-ordered rbtree to build a "timeline" of future
-task execution, and thus has no "array switch" artifacts (by which both the
-previous vanilla scheduler and RSDL/SD are affected).
+CFS 在设计上是非常彻底的：它不在运行队列中使用旧的结构，而是使用一个时序的红黑树来构建一个未来任务执行的时间线，因此没有“队列切换”这种原始结构（一个影响了之前的 vanilla 调度器和 RSDL/SD 的东西）。
 
-CFS also maintains the rq->cfs.min_vruntime value, which is a monotonic
-increasing value tracking the smallest vruntime among all tasks in the
-runqueue.  The total amount of work done by the system is tracked using
-min_vruntime; that value is used to place newly activated entities on the left
-side of the tree as much as possible.
+CFS 也维护着 `rq->cfs.min_vruntime` 值，这个值是单调递增的，追踪了在运行队列中的所有任务中最小的 vruntime 值。
+我们用 `min_vruntime` 追踪系统完成的工作总量；这个值用于尽可能把新的活跃实体放置在这棵树的左侧。
 
-The total number of running tasks in the runqueue is accounted through the
-rq->cfs.load value, which is the sum of the weights of the tasks queued on the
-runqueue.
+我们用 `rq->cfs.load` 计算运行队列中所有正在运行的任务总数，这个值等于队列中所有任务的权值之和。
 
-CFS maintains a time-ordered rbtree, where all runnable tasks are sorted by the
-p->se.vruntime key. CFS picks the "leftmost" task from this tree and sticks to it.
-As the system progresses forwards, the executed tasks are put into the tree
-more and more to the right --- slowly but surely giving a chance for every task
-to become the "leftmost task" and thus get on the CPU within a deterministic
-amount of time.
+CFS 维护着一棵时序的红黑树，即所有可运行的任务按照 `p->se.vruntime` 排序。
+CFS 从这棵树挑选最左侧的任务并附着在这个任务上。
+随着系统的运行，执行过的任务被扔到这棵树里，更多地移动到树的右侧－－慢慢并肯定地给予了每个任务成为“最左侧任务”的机会，因此能在一个确定的时间内使用 CPU 。
 
-Summing up, CFS works like this: it runs a task a bit, and when the task
-schedules (or a scheduler tick happens) the task's CPU usage is "accounted
-for": the (small) time it just spent using the physical CPU is added to
-p->se.vruntime.  Once p->se.vruntime gets high enough so that another task
-becomes the "leftmost task" of the time-ordered rbtree it maintains (plus a
-small amount of "granularity" distance relative to the leftmost task so that we
-do not over-schedule tasks and trash the cache), then the new leftmost task is
-picked and the current task is preempted.
-
-
+以上综述，CFS 这样工作：它运行一个任务一小会儿，并且当这个任务调度（或者一个调度器嘀嗒发生）时，它的 CPU 使用量通过这样计算：
+把它刚刚使用物理 CPU 的（小的）时间加到 `p->se.vruntime` 上。
+当 `p->se.vruntime` 变得足够高，以至于另外的任务成为由这个值维护的时序红黑树的“最左端”任务，（加上一个小的与最左侧任务相关的一个“间隔”距离量，因此我们不至于过度调度任务和损坏缓存)，然后最新的最左侧任务被选中，接着取代当前的任务。
 
 ## 4. CFS 的一些特性 
 
@@ -68,16 +50,18 @@ other HZ detail.  Thus the CFS scheduler has no notion of "timeslices" in the
 way the previous scheduler had, and has no heuristics whatsoever.  There is
 only one central tunable (you have to switch on CONFIG_SCHED_DEBUG):
 
+CFS 使用纳秒粒度进行计算，并且不依赖任何时钟周期和其他赫兹细节。
+因此，CFS 调度器没有任何之前调度器所有的“时间片”概念，并且没有任何的启发式算法。
+这里仅有一个可调的中心（你必须打开 `CONFIG_SCHED_DEBUG`）：
+
+```
    /proc/sys/kernel/sched_min_granularity_ns
+```
 
-which can be used to tune the scheduler from "desktop" (i.e., low latencies) to
-"server" (i.e., good batching) workloads.  It defaults to a setting suitable
-for desktop workloads.  SCHED_BATCH is handled by the CFS scheduler module too.
+这个可以用于把调度器从“桌面级”（例如低延迟）负荷调整到“服务器级”（例如良好的批处理）负荷。
+`SCHED_BATCH` 也是由CFS调度器模块处理的。
 
-Due to its design, the CFS scheduler is not prone to any of the "attacks" that
-exist today against the heuristics of the stock scheduler: fiftyp.c, thud.c,
-chew.c, ring-test.c, massive_intr.c all work fine and do not impact
-interactivity and produce the expected behavior.
+由于CFS调度器的设计，它不会易于任何今天已经存在的，对旧的调度器的启发式策略的“攻击”：`fiftyp.c`，`thud.c`，`chew.c`，`ring-test.c`，`massive_intr.c` 都能很好地工作，没有交互上的冲击,能出现预期的行为。
 
 The CFS scheduler has a much stronger handling of nice levels and SCHED_BATCH
 than the previous vanilla scheduler: both types of workloads are isolated much
