@@ -7,6 +7,7 @@ CFS 的具体实现在 kernel/sched/fair.c 中，本文仅对 Linux 3.18 kernel/
 
 
 ```c
+/* 运行队列中 CFS 相关的域 */
 /* CFS-related fields in a runqueue */
 struct cfs_rq {
     struct load_weight load;
