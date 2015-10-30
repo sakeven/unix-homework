@@ -1,5 +1,9 @@
 # CFS Scheduler
 
+原文 [CFS Scheduler](https://github.com/torvalds/linux/blob/v3.18/Documentation/scheduler/sched-design-CFS.txt)
+
+译者：Sakeven Jiang 2015-10-29
+
 ## 1.  概览
 
 CFS 意为 “完全公平调度器”，是一种新的“桌面”进程调度器，由 Ingo Molnar 实现，在 linux 2.6.23 中并入内核。
@@ -81,63 +85,48 @@ CFS 实现了三种调度策略：
 
 ## 6. 调度类 
 
-The new CFS scheduler has been designed in such a way to introduce "Scheduling
-Classes," an extensible hierarchy of scheduler modules.  These modules
-encapsulate scheduling policy details and are handled by the scheduler core
-without the core code assuming too much about them.
+新的 CFS 调度器被设计成如此需要介绍下“调度类”，调度器模块的一个可扩展层次。
+这些模块封装了调度策略细节，并由调度器核心处理，不需要核心代码对它们负担太多。
 
-sched/fair.c implements the CFS scheduler described above.
+`sched/fair.c` 实现了上述的 CFS 调度器。
 
-sched/rt.c implements SCHED_FIFO and SCHED_RR semantics, in a simpler way than
-the previous vanilla scheduler did.  It uses 100 runqueues (for all 100 RT
-priority levels, instead of 140 in the previous scheduler) and it needs no
-expired array.
-
-Scheduling classes are implemented through the sched_class structure, which
-contains hooks to functions that must be called whenever an interesting event
-occurs.
-
-This is the (partial) list of the hooks:
-
- - enqueue_task(...)
-
-   Called when a task enters a runnable state.
-   It puts the scheduling entity (task) into the red-black tree and
-   increments the nr_running variable.
-
- - dequeue_task(...)
-
-   When a task is no longer runnable, this function is called to keep the
-   corresponding scheduling entity out of the red-black tree.  It decrements
-   the nr_running variable.
-
- - yield_task(...)
-
-   This function is basically just a dequeue followed by an enqueue, unless the
-   compat_yield sysctl is turned on; in that case, it places the scheduling
-   entity at the right-most end of the red-black tree.
-
- - check_preempt_curr(...)
-
-   This function checks if a task that entered the runnable state should
-   preempt the currently running task.
-
- - pick_next_task(...)
-
-   This function chooses the most appropriate task eligible to run next.
-
- - set_curr_task(...)
-
-   This function is called when a task changes its scheduling class or changes
-   its task group.
-
- - task_tick(...)
-
-   This function is mostly called from time tick functions; it might lead to
-   process switch.  This drives the running preemption.
+`sched/rt.c` 用一个比之前 vanilla 调度器更简单的方式实现了 `SCHED_FIFO` 和 `SCHED_RR`。
+它使用 100 个运行队列（对于所有 100 运行时优先等级，而不是在之前的调度器中的 140 个），并且它不需要额外的数组。
 
 
+调度类通过 `sched_class` 结构实现，这个结构包含了在任何时候一个感兴趣的事件发生时所必需的回调函数。
 
+这里列出了（一部分）回调函数：
+
+- `enqueue_task(...)`
+
+当一个任务进入到可运行状态时调用。
+它把一个调度实体（任务）放入红黑树，并且增加 `nr_running` 这个变量。
+
+- `dequeue_task(...)`
+
+当一个任务不再可运行，这个函数将被调用，用于把对应的调度实体移出红黑树。
+它会减小 `nr_running` 变量。
+
+- `yield_task(...)`
+
+这个函数基本上就是一个出队紧跟着一个入队，出发 `compat_yield ` 的 `compat_yield` 打开；在这种情况下，它把调度实体放置到红黑树的最右侧。
+
+- `check_preempt_curr(...)`
+
+这个函数检查一个已经进入可运行状态的任务是否应该抢占当前运行的任务。
+
+- `pick_next_task(...)`
+
+这个函数选择最合适的任务用于接下来的运行。
+
+- `set_curr_task(...)`
+
+当一个任务改变了它的调度类或者改变了它的任务组，这个函数将被调用。
+
+- `task_tick(...)`
+
+这个函数大部分由时间嘀嗒函数调用；它可能导致进程切换。它驱动着运行抢占。
 
 ## 7.  CFS 的组调度器扩展
 
