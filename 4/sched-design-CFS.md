@@ -39,16 +39,11 @@ CFS 维护着一棵时序的红黑树，即所有可运行的任务按照 `p->se
 CFS 从这棵树挑选最左侧的任务并附着在这个任务上。
 随着系统的运行，执行过的任务被扔到这棵树里，更多地移动到树的右侧－－慢慢并肯定地给予了每个任务成为“最左侧任务”的机会，因此能在一个确定的时间内使用 CPU 。
 
-以上综述，CFS 这样工作：它运行一个任务一小会儿，并且当这个任务调度（或者一个调度器嘀嗒发生）时，它的 CPU 使用量通过这样计算：
+综上所述，CFS 这样工作：它运行一个任务一小会儿，并且当这个任务调度（或者一个调度器嘀嗒发生）时，它的 CPU 使用量通过这样计算：
 把它刚刚使用物理 CPU 的（小的）时间加到 `p->se.vruntime` 上。
 当 `p->se.vruntime` 变得足够高，以至于另外的任务成为由这个值维护的时序红黑树的“最左端”任务，（加上一个小的与最左侧任务相关的一个“间隔”距离量，因此我们不至于过度调度任务和损坏缓存)，然后最新的最左侧任务被选中，接着取代当前的任务。
 
 ## 4. CFS 的一些特性 
-
-CFS uses nanosecond granularity accounting and does not rely on any jiffies or
-other HZ detail.  Thus the CFS scheduler has no notion of "timeslices" in the
-way the previous scheduler had, and has no heuristics whatsoever.  There is
-only one central tunable (you have to switch on CONFIG_SCHED_DEBUG):
 
 CFS 使用纳秒粒度进行计算，并且不依赖任何时钟周期和其他赫兹细节。
 因此，CFS 调度器没有任何之前调度器所有的“时间片”概念，并且没有任何的启发式算法。
@@ -61,11 +56,9 @@ CFS 使用纳秒粒度进行计算，并且不依赖任何时钟周期和其他�
 这个可以用于把调度器从“桌面级”（例如低延迟）负荷调整到“服务器级”（例如良好的批处理）负荷。
 `SCHED_BATCH` 也是由CFS调度器模块处理的。
 
-由于CFS调度器的设计，它不会易于任何今天已经存在的，对旧的调度器的启发式策略的“攻击”：`fiftyp.c`，`thud.c`，`chew.c`，`ring-test.c`，`massive_intr.c` 都能很好地工作，没有交互上的冲击,能出现预期的行为。
+由于CFS调度器的设计，它不会使任何现在用于对付旧的调度器的启发式策略的“攻击”变得容易：`fiftyp.c`，`thud.c`，`chew.c`，`ring-test.c`，`massive_intr.c` 都能很好地工作，没有交互上的冲击，能出现预期的行为。
 
-The CFS scheduler has a much stronger handling of nice levels and SCHED_BATCH
-than the previous vanilla scheduler: both types of workloads are isolated much
-more aggressively.
+CFS 调度器有着比之前 vanilla 调度器更强壮的对优先级和 `SCHED_BATCH` 的处理能力：两种负荷都是更加激烈地独立的。
 
 SMP load-balancing has been reworked/sanitized: the runqueue-walking
 assumptions are gone from the load-balancing code now, and iterators of the
@@ -76,21 +69,15 @@ result.
 
 ## 5. 调度策略
 
-CFS implements three scheduling policies:
+CFS 实现了三种调度策略：
 
-  - SCHED_NORMAL (traditionally called SCHED_OTHER): The scheduling
-    policy that is used for regular tasks.
+    - `SCHED_NORMAL` （传统上被称为 `SCHED_OTHER` ）：这个调度策略用于普通任务。
 
-  - SCHED_BATCH: Does not preempt nearly as often as regular tasks
-    would, thereby allowing tasks to run longer and make better use of
-    caches but at the cost of interactivity. This is well suited for
-    batch jobs.
+    - `SCHED_BATCH` ：没有像普通任务那样经常的抢占，由此可以让任务运行更长，能够更好地使用缓存，但会损失交互能力。这能很好地适应批处理任务。
 
-  - SCHED_IDLE: This is even weaker than nice 19, but its not a true
-    idle timer scheduler in order to avoid to get into priority
-    inversion problems which would deadlock the machine.
+    - `SCHED_IDLE` ：这个比优先级 19 更弱，但是为了避免陷入产生死锁的优先级逆序问题，这个并不是一个真正理想的时间调度器。
 
-SCHED_FIFO/_RR are implemented in sched/rt.c and are as specified by
+`SCHED_FIFO/_RR` are implemented in sched/rt.c and are as specified by
 POSIX.
 
 The command chrt from util-linux-ng 2.13.1.1 can set all of these except
