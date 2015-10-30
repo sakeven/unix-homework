@@ -17,6 +17,7 @@ understand it, the timeslice graph went like this (cheesy ASCII art
 alert!):
 
 
+```
                    A
              \     | [timeslice length]
               \    |
@@ -31,6 +32,7 @@ alert!):
  -20               |                +19
                    |
                    |
+```
 
 So that if someone wanted to really renice tasks, +19 would give a much
 bigger hit than the normal linear rule would do. (The solution of
@@ -62,10 +64,12 @@ accurately: the fact that nice level behavior depended on the _absolute_
 nice level as well, while the nice API itself is fundamentally
 "relative":
 
+```c
    int nice(int inc);
 
    asmlinkage long sys_nice(int increment)
 
+```
 (the first one is the glibc API, the second one is the syscall API.)
 Note that the 'inc' is relative to the current nice level. Tools like
 bash's "nice" command mirror this relative API.
