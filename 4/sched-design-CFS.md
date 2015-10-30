@@ -130,45 +130,42 @@ CFS 实现了三种调度策略：
 
 ## 7.  CFS 的组调度器扩展
 
-Normally, the scheduler operates on individual tasks and strives to provide
-fair CPU time to each task.  Sometimes, it may be desirable to group tasks and
-provide fair CPU time to each such task group.  For example, it may be
-desirable to first provide fair CPU time to each user on the system and then to
-each task belonging to a user.
+通常，调度器操作单独的任务，力图为每个任务提供公平的 CPU 时间。一些时候，这对组任务可能也是可取的，为每个任务组提供公平的 CPU  时间。
+例如，我们可能希望它能先为系统里的每个用户提供公平的 CPU 时间，并且然后为这个用户的每个任务提供。
 
-CONFIG_CGROUP_SCHED strives to achieve exactly that.  It lets tasks to be
-grouped and divides CPU time fairly among such groups.
+`CONFIG_CGROUP_SCHED ` 力图完全实现这个。
+它让任务分组并且将 CPU 时间公平地分配给每个组。
 
-CONFIG_RT_GROUP_SCHED permits to group real-time (i.e., SCHED_FIFO and
-SCHED_RR) tasks.
+`CONFIG_RT_GROUP_SCHED` 缺省为组实时（例如，`SCHED_FIFO` 和 `SCHED_RR`）任务。
 
-CONFIG_FAIR_GROUP_SCHED permits to group CFS (i.e., SCHED_NORMAL and
-SCHED_BATCH) tasks.
+`CONFIG_FAIR_GROUP_SCHED ` 缺省为组 CFS（例如，`SCHED_NORMAL` 和 `SCHED_BATCH`）任务。
 
-   These options need CONFIG_CGROUPS to be defined, and let the administrator
-   create arbitrary groups of tasks, using the "cgroup" pseudo filesystem.  See
-   Documentation/cgroups/cgroups.txt for more information about this filesystem.
+这些选项需要先定义 `CONFIG_CGROUPS`，并且让管理员用" CGROUP "伪文件系统创建随机任务组。
+关于这个文件系统的更多信息，请看 Documentation/cgroups/cgroups.txt。 
 
-When CONFIG_FAIR_GROUP_SCHED is defined, a "cpu.shares" file is created for each
-group created using the pseudo filesystem.  See example steps below to create
-task groups and modify their CPU share using the "cgroups" pseudo filesystem.
 
-	# mount -t tmpfs cgroup_root /sys/fs/cgroup
-	# mkdir /sys/fs/cgroup/cpu
-	# mount -t cgroup -ocpu none /sys/fs/cgroup/cpu
-	# cd /sys/fs/cgroup/cpu
+当定义 `CONFIG_FAIR_GROUP_SCHED ` 后，将会为用这个伪文件系统创建的每个组创建一个“ cpu.shares ”文件。
+请看以下例子关于如何用“ CGROUPS ”伪文件系统创建任务组和修改它们的 CPU 共享
 
-	# mkdir multimedia	# create "multimedia" group of tasks
-	# mkdir browser		# create "browser" group of tasks
+```bash
+# mount -t tmpfs cgroup_root /sys/fs/cgroup
+# mkdir /sys/fs/cgroup/cpu
+# mount -t cgroup -ocpu none /sys/fs/cgroup/cpu
+# cd /sys/fs/cgroup/cpu
 
-	# #Configure the multimedia group to receive twice the CPU bandwidth
-	# #that of browser group
+# mkdir multimedia	# create "multimedia" group of tasks
+# mkdir browser		# create "browser" group of tasks
 
-	# echo 2048 > multimedia/cpu.shares
-	# echo 1024 > browser/cpu.shares
+# #Configure the multimedia group to receive twice the CPU bandwidth
+# #that of browser group
 
-	# firefox &	# Launch firefox and move it to "browser" group
-	# echo <firefox_pid> > browser/tasks
+# echo 2048 > multimedia/cpu.shares
+# echo 1024 > browser/cpu.shares
 
-	# #Launch gmplayer (or your favourite movie player)
-	# echo <movie_player_pid> > multimedia/tasks
+# firefox &	# Launch firefox and move it to "browser" group
+# echo <firefox_pid> > browser/tasks
+
+# #Launch gmplayer (or your favourite movie player)
+# echo <movie_player_pid> > multimedia/tasks
+```
+
