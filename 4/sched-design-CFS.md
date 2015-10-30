@@ -60,29 +60,23 @@ CFS 使用纳秒粒度进行计算，并且不依赖任何时钟周期和其他�
 
 CFS 调度器有着比之前 vanilla 调度器更强壮的对优先级和 `SCHED_BATCH` 的处理能力：两种负荷都是更加激烈地独立的。
 
-SMP load-balancing has been reworked/sanitized: the runqueue-walking
-assumptions are gone from the load-balancing code now, and iterators of the
-scheduling modules are used.  The balancing code got quite a bit simpler as a
-result.
-
+SMP 负载均衡已经被重构：运行队列步进假设现在已经从负载均衡代码中移除，而是使用了调度模块的迭代器。
+最终负载均衡代码变的更加简洁。
 
 
 ## 5. 调度策略
 
 CFS 实现了三种调度策略：
 
-    - `SCHED_NORMAL` （传统上被称为 `SCHED_OTHER` ）：这个调度策略用于普通任务。
+- `SCHED_NORMAL` （传统上被称为 `SCHED_OTHER` ）：这个调度策略用于普通任务。
 
-    - `SCHED_BATCH` ：没有像普通任务那样经常的抢占，由此可以让任务运行更长，能够更好地使用缓存，但会损失交互能力。这能很好地适应批处理任务。
+- `SCHED_BATCH` ：没有像普通任务那样经常的抢占，由此可以让任务运行更长，能够更好地使用缓存，但会损失交互能力。这能很好地适应批处理任务。
 
-    - `SCHED_IDLE` ：这个比优先级 19 更弱，但是为了避免陷入产生死锁的优先级逆序问题，这个并不是一个真正理想的时间调度器。
+- `SCHED_IDLE` ：这个甚至比优先级 19 更弱，但是为了避免陷入产生死锁的优先级逆序问题，这个并不是一个真正理想的时间调度器。
 
-`SCHED_FIFO/_RR` are implemented in sched/rt.c and are as specified by
-POSIX.
+`SCHED_FIFO/_RR` 在 `sched/rt.c` 中实现，并且符合 POSIX 。
 
-The command chrt from util-linux-ng 2.13.1.1 can set all of these except
-SCHED_IDLE.
-
+来自 util-linux-ng 2.13.1.1 的 chrt 命令可以设置除了 `SCHED_IDLE` 之外的所有这些。
 
 
 ## 6. 调度类 
