@@ -9,13 +9,8 @@ scheduler, (otherwise we'd have done it long ago) because nice level
 support was historically coupled to timeslice length, and timeslice
 units were driven by the HZ tick, so the smallest timeslice was 1/HZ.
 
-In the O(1) scheduler (in 2003) we changed negative nice levels to be
-much stronger than they were before in 2.4 (and people were happy about
-that change), and we also intentionally calibrated the linear timeslice
-rule so that nice +19 level would be _exactly_ 1 jiffy. To better
-understand it, the timeslice graph went like this (cheesy ASCII art
-alert!):
-
+在 O(1) 调度器（在 2003 年）我们改变了负优先级使之比之前在 2.4 中更健壮（并且大家都乐于这个改变），并且我们有意地标准化线性时间片规则，因此 +19 优先级将真正是 1 时钟周期。
+为了更好的理解这个，时间片图像这样（丑陋的 ASCII 艺术预警！）：
 
 ```
                    A
