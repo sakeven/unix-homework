@@ -56,7 +56,7 @@ CFS 使用纳秒粒度进行计算，并且不依赖任何时钟周期和其他�
 这里仅有一个可调的中心（你必须打开 `CONFIG_SCHED_DEBUG`）：
 
 ```
-   /proc/sys/kernel/sched_min_granularity_ns
+/proc/sys/kernel/sched_min_granularity_ns
 ```
 
 这个可以用于把调度器从“桌面级”（例如低延迟）负荷调整到“服务器级”（例如良好的批处理）负荷。
