@@ -1,13 +1,8 @@
-This document explains the thinking about the revamped and streamlined
-nice-levels implementation in the new Linux scheduler.
+这份文档解释了有关了在新的 Linux 调度器中更新和改善的优先级实现思想。
 
-Nice levels were always pretty weak under Linux and people continuously
-pestered us to make nice +19 tasks use up much less CPU time.
+优先级曾经在 Linux 上一直非常薄弱，人们一直地纠缠我们，让我们实现优先级 +19 的任务消耗更少的 CPU 时间。
 
-Unfortunately that was not that easy to implement under the old
-scheduler, (otherwise we'd have done it long ago) because nice level
-support was historically coupled to timeslice length, and timeslice
-units were driven by the HZ tick, so the smallest timeslice was 1/HZ.
+不幸地，这在旧的调度器上并不容易实现，（否则很早以前我们就完成了）因为优先级支持在历史上是与时间片长度耦合的，并且时间片单位是由 HZ 嘀嗒驱动的，所以最小的时间片曾经是 1/HZ 。
 
 在 O(1) 调度器（在 2003 年）我们改变了负优先级使之比之前在 2.4 中更健壮（并且大家都乐于这个改变），并且我们有意地标准化线性时间片规则，因此 +19 优先级将真正是 1 时钟周期。
 为了更好的理解这个，时间片图像这样（丑陋的 ASCII 艺术预警！）：
@@ -29,45 +24,28 @@ units were driven by the HZ tick, so the smallest timeslice was 1/HZ.
                    |
 ```
 
-So that if someone wanted to really renice tasks, +19 would give a much
-bigger hit than the normal linear rule would do. (The solution of
-changing the ABI to extend priorities was discarded early on.)
+所以如果有人真地想重新安排任务的优先级，+19 将会给它一个比普通线性规则所给的还大很多的标记。
+（改变 ABI 来扩展优先级的解决方案很早被否决了。）
 
-This approach worked to some degree for some time, but later on with
-HZ=1000 it caused 1 jiffy to be 1 msec, which meant 0.1% CPU usage which
-we felt to be a bit excessive. Excessive _not_ because it's too small of
-a CPU utilization, but because it causes too frequent (once per
-millisec) rescheduling. (and would thus trash the cache, etc. Remember,
-this was long ago when hardware was weaker and caches were smaller, and
-people were running number crunching apps at nice +19.)
+这个方法有时候有点用，但是之后在 HZ=1000 的时候，它引起 1 时钟周期变成 1 毫秒，这意味着 我们感受到的 0.1% CPU 使用量有点过多。
+过多不是因为 CPU 利用率太低，而是因为它引起了太频繁的（一次一毫秒的）重新调记住。
+（并且例如，这会引起损坏缓存。记住，这是很久以前，硬件非常落后，缓存非常小，并且人们运行数学运算在优先级 +19。）
 
-So for HZ=1000 we changed nice +19 to 5msecs, because that felt like the
-right minimal granularity - and this translates to 5% CPU utilization.
-But the fundamental HZ-sensitive property for nice+19 still remained,
-and we never got a single complaint about nice +19 being too _weak_ in
-terms of CPU utilization, we only got complaints about it (still) being
-too _strong_ :-)
+所以对于 HZ=1000 我们把优先级 +19 提升到 5 毫米，因为这让人感觉是正确的最小尺度－并且这转化到 5% 的 CPU 利用率。
+但是优先级 +19 的根本的 HZ 敏感的属性继续保留着，并且我们从未得到一个关于优先级 +19 在 CPU 利用率上太差的单独的抱怨，我们只得到关于这个（仍然）太强大的怨念:-)
 
-To sum it up: we always wanted to make nice levels more consistent, but
-within the constraints of HZ and jiffies and their nasty design level
-coupling to timeslices and granularity it was not really viable.
+综上所述：我们一直希望让优先级更一致的，但是在 HZ 和时钟周期，及它们令人讨厌的与时间片和粒度耦合的设计等级约束下，这不是真正切实可行的。
 
-The second (less frequent but still periodically occurring) complaint
-about Linux's nice level support was its assymetry around the origo
-(which you can see demonstrated in the picture above), or more
-accurately: the fact that nice level behavior depended on the _absolute_
-nice level as well, while the nice API itself is fundamentally
-"relative":
+第二个（ 低频但是仍然周期性地发生）关于 Linux 的优先级支持的抱怨是它围绕（你可以看到上图的证据）起点的不对称，或者更如实地：优先级行为依据绝对的优先级的事实也是如此，然而优先级 API 是基本上“相关的”：
 
 ```c
-   int nice(int inc);
+int nice(int inc);
 
-   asmlinkage long sys_nice(int increment)
-
+asmlinkage long sys_nice(int increment)
 ```
-(the first one is the glibc API, the second one is the syscall API.)
-Note that the 'inc' is relative to the current nice level. Tools like
-bash's "nice" command mirror this relative API.
+
+（第一个是 glibc API，第二个是 syscall API。）
+注意 `inc` 是与此时的优先级有关的。像 bash 的 `nice` 命令这种工具正是借鉴这个相关 API。
 
 With the old scheduler, if you for example started a niced task with +1
 and another task with +2, the CPU split between the two tasks would
