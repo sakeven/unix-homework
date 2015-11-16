@@ -1,6 +1,6 @@
 # Sched Nice Design 
 
-原文 [Sched Nice Design](https://github.com/torvalds/linux/blob/v3.18/Documentation/scheduler/sched-nice-design.txt)
+原文： [Sched Nice Design](https://github.com/torvalds/linux/blob/v3.18/Documentation/scheduler/sched-nice-design.txt)
 
 译者：Sakeven Jiang 
 
