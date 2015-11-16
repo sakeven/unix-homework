@@ -1,6 +1,6 @@
 # CFS Scheduler
 
-原文 [CFS Scheduler](https://github.com/torvalds/linux/blob/v3.18/Documentation/scheduler/sched-design-CFS.txt)
+原文：[CFS Scheduler](https://github.com/torvalds/linux/blob/v3.18/Documentation/scheduler/sched-design-CFS.txt)
 
 译者：Sakeven Jiang 
 
